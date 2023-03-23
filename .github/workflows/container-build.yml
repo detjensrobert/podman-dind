@@ -24,7 +24,7 @@ jobs:
           tags: |
             latest
             ${{ env.PODMAN_VERSION }}
-          containerfiles: ./Dockerfile
+          containerfiles: ./Containerfile
           build-args: |
             PODMAN_VERSION=${{ env.PODMAN_VERSION }}
           oci: true
