@@ -15,6 +15,10 @@ USER podman
 # rootless needs FUSE support
 # VOLUME /dev/fuse
 
+# use volume for container storage to support native overlay
+# VOLUME /var/lib/containers
+VOLUME /home/podman/.local/share/containers/storage/overlay
+
 # run podman daemon over tcp instead of default socket
 EXPOSE 2375
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
