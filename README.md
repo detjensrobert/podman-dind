@@ -9,9 +9,9 @@ Intended for use in Gitlab CI DIND as a rootless replacement for [rootful, privi
 As standalone image:
 
 ```sh
-podman run -d
-  --name podman-dind
-  --port 2375:2375
+podman run -d \
+  --name podman-dind \
+  --publish 2375:2375 \
   ghcr.io/detjensrobert/podman-dind
 ```
 
@@ -28,8 +28,11 @@ container-build:
   image: docker:latest
   variables:
     DOCKER_HOST: tcp://dind:2375
+    CONTAINER_HOST: tcp://dind:2375
   script:
     - docker build --tag example-image:latest ...
 ```
 
 The runner does not need to be privileged.
+
+In this simple example, it would probably be simpler to use a podman image directly instead of using a separate service container, but this example works for any service that expects to talk to the Docker daemon.
