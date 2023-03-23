@@ -1,0 +1,44 @@
+name: container-build
+
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_dispatch:
+
+env:
+  PODMAN_VERSION: latest
+  IMAGE: podman-dind
+
+jobs:
+  build-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Image
+        id: build_image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE }}
+          tags: |
+            latest
+            ${{ env.PODMAN_VERSION }}
+          containerfiles: ./Dockerfile
+          build-args: |
+            PODMAN_VERSION=${{ env.PODMAN_VERSION }}
+          oci: true
+          layers: true
+          extra-args:
+            --cache-from ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE }}
+
+      - name: Push To GHCR
+        uses: redhat-actions/push-to-registry@v2
+        id: push-ghcr
+        with:
+          image: ${{ steps.build_image.outputs.image }}
+          tags: |
+            ${{ steps.build_image.outputs.tags }}
+          registry: ghcr.io/${{ github.repository_owner }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
