@@ -17,7 +17,7 @@ USER podman
 
 # use volume for container storage to support native overlay
 # VOLUME /var/lib/containers
-VOLUME /home/podman/.local/share/containers/storage/overlay
+VOLUME /home/podman/.local/share/containers
 
 # run podman daemon over tcp instead of default socket
 EXPOSE 2375
