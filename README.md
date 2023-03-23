@@ -28,11 +28,10 @@ container-build:
   image: docker:latest
   variables:
     DOCKER_HOST: tcp://dind:2375
-    CONTAINER_HOST: tcp://dind:2375
   script:
     - docker build --tag example-image:latest ...
 ```
 
 The runner does not need to be privileged.
 
-In this simple example, it would probably be simpler to use a podman image directly instead of using a separate service container, but this example works for any service that expects to talk to the Docker daemon.
+In this example, it would probably be simpler to use a podman image directly as the job container instead of using a separate service, but this example shows how this image is a drop-in replacement for any job that expects to talk to the Docker daemon in a `dind` service.
