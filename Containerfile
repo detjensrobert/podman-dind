@@ -17,4 +17,7 @@ USER podman
 
 # run podman daemon over tcp instead of default socket
 EXPOSE 2375
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD env CONTAINER_HOST=tcp://localhost:2375 podman info
+
 ENTRYPOINT [ "podman", "--log-level=info", "system", "service", "--timeout=0", "tcp://0.0.0.0:2375" ]
