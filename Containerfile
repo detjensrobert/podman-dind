@@ -13,11 +13,7 @@ RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/regis
 USER podman
 
 # rootless needs FUSE support
-VOLUME /dev/fuse
-
-# use volume for container storage to support native overlay
-# VOLUME /var/lib/containers
-# VOLUME /home/podman/.local/share/containers
+# VOLUME /dev/fuse
 
 # precreate podman directory
 # RUN podman system reset -f
