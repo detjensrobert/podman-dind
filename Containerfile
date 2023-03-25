@@ -15,10 +15,6 @@ USER podman
 # rootless needs FUSE support
 # VOLUME /dev/fuse
 
-# precreate podman directory
-# RUN podman system reset -f
-# RUN podman system info
-
 # run podman daemon over tcp instead of default socket
 EXPOSE 2375
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
