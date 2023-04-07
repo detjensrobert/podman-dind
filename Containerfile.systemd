@@ -1,0 +1,33 @@
+ARG PODMAN_VER=latest
+FROM quay.io/podman/stable:${PODMAN_VER}
+
+# rootless needs dbus-launch
+RUN dnf install -y systemd dbus-x11 && \
+    dnf clean all && \
+    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
+
+# allow pulling from docker.io unqualified like docker does
+RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf.d/00-unqualified.conf
+
+# enable listening over tcp instead of unix socket
+COPY podman-socket-tcp.conf /etc/systemd/user/podman.socket.d/
+
+# base image already has rootless setup
+# enable socket service for user at boot
+USER podman
+RUN systemctl --user enable podman.socket
+USER root
+# RUN loginctl enable-linger podman
+RUN mkdir -p /var/lib/systemd/linger/ && \
+    touch /var/lib/systemd/linger/podman
+
+# rootless needs FUSE support
+# VOLUME /dev/fuse
+
+# run podman daemon over tcp instead of default socket
+EXPOSE 2375
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD env CONTAINER_HOST=tcp://localhost:2375 podman info
+
+# Start container with systemd
+CMD [ "/usr/sbin/init" ]
