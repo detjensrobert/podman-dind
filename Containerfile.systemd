@@ -11,7 +11,8 @@ RUN echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/regis
 
 # enable listening over tcp instead of unix socket
 COPY podman-socket-tcp.conf /etc/systemd/user/podman.socket.d/
-
+# enable delegation of all controllers
+COPY cgroup-delegate.conf /etc/systemd/system/user@.service.d/override.conf
 # base image already has rootless setup
 # enable socket service for user at boot
 USER podman
