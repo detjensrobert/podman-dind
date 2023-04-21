@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  PODMAN_VERSION: "4.4.2"
+  PODMAN_VERSION: "4.5.0"
   IMAGE: podman-dind
 
 jobs:
@@ -42,7 +42,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-  build-systemd-image:
+  build-other-images:
+    strategy:
+      matrix:
+        file:
+          - "systemd"
+          - "ubuntu"
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -54,8 +60,8 @@ jobs:
           image: ${{ env.IMAGE }}
           tags: |
             systemd
-            ${{ env.PODMAN_VERSION }}-systemd
-          containerfiles: ./Containerfile.systemd
+            ${{ env.PODMAN_VERSION }}-{{ matrix.file }}
+          containerfiles: ./Containerfile.{{ matrix.file }}
           build-args: |
             PODMAN_VERSION=${{ env.PODMAN_VERSION }}
           oci: false # healthcheck is only supported in docker format
