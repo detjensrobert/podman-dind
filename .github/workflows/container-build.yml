@@ -42,13 +42,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-  build-other-images:
-    strategy:
-      matrix:
-        file:
-          - "systemd"
-          - "ubuntu"
-
+  build-systemd-image:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -60,8 +54,8 @@ jobs:
           image: ${{ env.IMAGE }}
           tags: |
             systemd
-            ${{ env.PODMAN_VERSION }}-{{ matrix.file }}
-          containerfiles: ./Containerfile.{{ matrix.file }}
+            ${{ env.PODMAN_VERSION }}-systemd
+          containerfiles: ./Containerfile.systemd
           build-args: |
             PODMAN_VERSION=${{ env.PODMAN_VERSION }}
           oci: false # healthcheck is only supported in docker format
